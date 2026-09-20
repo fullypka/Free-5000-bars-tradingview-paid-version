@@ -1,0 +1,616 @@
+/* ═══════════════════════════════════════════════════════════
+   Trading Dashboard — dashboard.css
+   Dark TradingView-style theme, pure CSS Grid layouts
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Variables ─────────────────────────────────────────── */
+:root {
+  --bg:          #131722;
+  --bg-panel:    #1e222d;
+  --bg-pane:     #131722;
+  --border:      #2a2e39;
+  --border-lite: #363c4e;
+  --txt:         #d1d4dc;
+  --txt-muted:   #787b86;
+  --accent:      #2962ff;
+  --accent-glow: rgba(41, 98, 255, 0.15);
+  --green:       #26a69a;
+  --green-glow:  rgba(38, 166, 154, 0.25);
+  --red:         #ef5350;
+  --red-glow:    rgba(239, 83, 80, 0.25);
+  --radius:      4px;
+  --topbar-h:    48px;
+  --ticker-h:    34px;
+  --controls-h:  36px;
+  --gap:         2px;
+  --select-bg:   #2a2e39;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--txt);
+}
+
+/* ── Top Bar ────────────────────────────────────────────── */
+.top-bar {
+  height: var(--topbar-h);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 20px;
+  flex-shrink: 0;
+  z-index: 200;
+  box-shadow: 0 1px 8px rgba(0,0,0,.4);
+}
+
+.top-bar .logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--txt);
+  letter-spacing: -.3px;
+  white-space: nowrap;
+}
+
+.top-bar .logo span {
+  color: var(--accent);
+}
+
+.top-bar .logo svg {
+  width: 20px; height: 20px;
+  fill: var(--accent);
+}
+
+.top-bar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-lite);
+}
+
+.count-label {
+  color: var(--txt-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Count pill buttons */
+.count-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.count-pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-lite);
+  background: transparent;
+  color: var(--txt-muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all .15s;
+  line-height: 1;
+}
+
+.count-pill:hover {
+  border-color: var(--accent);
+  color: var(--txt);
+  background: var(--accent-glow);
+}
+
+.count-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Market status indicator */
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .4; }
+}
+
+.status-text {
+  color: var(--txt-muted);
+  font-size: 11px;
+}
+
+.top-bar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Chart Grid ─────────────────────────────────────────── */
+.chart-grid {
+  display: grid;
+  gap: var(--gap);
+  background: var(--border);
+  /* height = 100vh minus top-bar */
+  height: calc(100vh - var(--topbar-h));
+  overflow: hidden;
+}
+
+/* Layout classes — set grid-template columns + rows */
+.layout-1 { grid-template-columns: 1fr;           grid-template-rows: 1fr; }
+.layout-2 { grid-template-columns: 1fr 1fr;       grid-template-rows: 1fr; }
+.layout-4 { grid-template-columns: 1fr 1fr;       grid-template-rows: 1fr 1fr; }
+.layout-6 { grid-template-columns: 1fr 1fr 1fr;   grid-template-rows: 1fr 1fr; }
+.layout-8 { grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+
+/* ── Chart Pane ─────────────────────────────────────────── */
+.chart-pane {
+  background: var(--bg-pane);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+}
+
+.chart-pane:focus-within {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+  z-index: 2;
+}
+
+/* ── Pane Body & Drawing Toolbar ────────────────────────── */
+.pane-body {
+  display: flex;
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pane-chart-area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.drawing-toolbar {
+  width: 36px;
+  background: #181c27;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  gap: 3px;
+  flex-shrink: 0;
+  z-index: 20;
+  user-select: none;
+}
+
+.draw-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--txt-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .12s ease;
+  padding: 0;
+}
+
+.draw-btn:hover {
+  background: #2a2e39;
+  color: var(--txt);
+}
+
+.draw-btn.active {
+  background: rgba(41, 98, 255, 0.25);
+  border-color: var(--accent);
+  color: #588cff;
+}
+
+.draw-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.draw-sep {
+  width: 18px;
+  height: 1px;
+  background: var(--border-lite);
+  margin: 4px 0;
+}
+
+.drawing-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.drawing-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* ── Ticker Bar ─────────────────────────────────────────── */
+.ticker-bar {
+  height: var(--ticker-h);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 10px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flash overlay (green / red) */
+.ticker-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .05s;
+}
+
+.ticker-bar.flash-green::after {
+  background: var(--green);
+  animation: flash .55s ease-out forwards;
+}
+
+.ticker-bar.flash-red::after {
+  background: var(--red);
+  animation: flash .55s ease-out forwards;
+}
+
+@keyframes flash {
+  0%   { opacity: .35; }
+  100% { opacity: 0; }
+}
+
+.ticker-symbol {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--txt);
+  letter-spacing: .3px;
+  min-width: 60px;
+}
+
+.ticker-price {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--txt);
+  min-width: 80px;
+}
+
+.ticker-change {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 6px;
+  border-radius: 3px;
+  min-width: 56px;
+}
+
+.ticker-change.up   { color: var(--green); background: var(--green-glow); }
+.ticker-change.down { color: var(--red);   background: var(--red-glow);   }
+.ticker-change.flat { color: var(--txt-muted); background: transparent; }
+
+.ticker-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border-lite);
+  color: var(--txt-muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-left: auto;
+}
+
+.ticker-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-panel);
+  font-size: 11px;
+  color: var(--txt-muted);
+  gap: 6px;
+  transition: opacity .2s;
+}
+
+.ticker-loading.hidden { opacity: 0; pointer-events: none; }
+
+.spinner {
+  width: 12px; height: 12px;
+  border: 2px solid var(--border-lite);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Chart Container ────────────────────────────────────── */
+.chart-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Lightweight Charts mounts an absolutely-positioned canvas */
+.chart-container > * { width: 100% !important; height: 100% !important; }
+
+/* ── Pane Controls ──────────────────────────────────────── */
+.pane-controls {
+  height: var(--controls-h);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 6px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.control-select {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  background: var(--select-bg);
+  border: 1px solid var(--border-lite);
+  border-radius: var(--radius);
+  color: var(--txt);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color .15s;
+  /* shrink long text gracefully */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.control-select:hover  { border-color: var(--accent); }
+.control-select:focus  { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+.control-select option { background: var(--bg-panel); }
+
+/* Source select — shorter fixed width */
+.source-select { flex: 0 0 108px; }
+/* TF select — shortest */
+.tf-select     { flex: 0 0 60px; }
+
+/* ── Indicators Dropdown Menu ───────────────────────────── */
+.indicators-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.indicators-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 9px;
+  background: var(--select-bg);
+  border: 1px solid var(--border-lite);
+  border-radius: var(--radius);
+  color: var(--txt);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all .15s ease;
+  user-select: none;
+}
+
+.indicators-btn:hover {
+  border-color: var(--accent);
+  background: #363c4e;
+  color: #fff;
+}
+
+.indicators-btn.active {
+  border-color: var(--accent);
+  background: rgba(41, 98, 255, 0.2);
+  color: #90b4ff;
+}
+
+.indicators-btn svg {
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.indicators-badge {
+  display: none;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-left: 2px;
+}
+
+.indicators-menu {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  width: 230px;
+  max-height: 380px;
+  overflow-y: auto;
+  background: #181c27;
+  border: 1px solid var(--border-lite);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  padding: 6px 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInMenu .15s ease-out;
+}
+
+.indicators-menu::-webkit-scrollbar {
+  width: 5px;
+}
+.indicators-menu::-webkit-scrollbar-track {
+  background: #181c27;
+}
+.indicators-menu::-webkit-scrollbar-thumb {
+  background: #363c4e;
+  border-radius: 4px;
+}
+.indicators-menu::-webkit-scrollbar-thumb:hover {
+  background: #4c5369;
+}
+
+@keyframes fadeInMenu {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.indicators-menu.hidden {
+  display: none;
+}
+
+.indicators-menu-header {
+  padding: 8px 12px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--txt-muted);
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.indicators-menu-header:first-child {
+  margin-top: 0;
+}
+
+.ind-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .12s;
+  font-size: 11px;
+  color: var(--txt);
+}
+
+.ind-option:hover {
+  background: #2a2e39;
+  color: #fff;
+}
+
+.ind-option input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--accent);
+  width: 13px;
+  height: 13px;
+  margin: 0;
+}
+
+.ind-color-pill {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ind-label {
+  flex: 1;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* ── Loading / Error overlay ────────────────────────────── */
+.pane-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(19,23,34,.85);
+  backdrop-filter: blur(2px);
+  gap: 10px;
+  z-index: 10;
+  font-size: 12px;
+  color: var(--txt-muted);
+  pointer-events: none;
+  transition: opacity .25s;
+}
+
+.pane-overlay.hidden { opacity: 0; }
+
+.pane-overlay .big-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border-lite);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .9s linear infinite;
+}
+
+/* ── Responsive collapse ────────────────────────────────── */
+@media (max-width: 700px) {
+  .layout-2,
+  .layout-4,
+  .layout-6,
+  .layout-8 {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .chart-grid { overflow-y: auto; height: auto; min-height: calc(100vh - var(--topbar-h)); }
+  .count-pills { display: none; }
+}
+
+@media (max-width: 1000px) {
+  .layout-6 { grid-template-columns: 1fr 1fr !important; grid-template-rows: repeat(3, 1fr); }
+  .layout-8 { grid-template-columns: 1fr 1fr !important; grid-template-rows: repeat(4, 1fr); }
+}
