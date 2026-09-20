@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Dashboard</title>
+
+  <!-- Inter font (optional, falls back gracefully) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════ TOP BAR ══════════════════════════════ -->
+  <div class="top-bar">
+    <!-- Logo -->
+    <div class="logo">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 17l4-8 4 4 3-6 4 10H3z"/>
+      </svg>
+      <span>Trading<span>Dash</span></span>
+    </div>
+
+    <div class="top-bar-divider"></div>
+
+    <!-- Chart count selector -->
+    <span class="count-label">Charts</span>
+    <div class="count-pills" role="group" aria-label="Number of charts">
+      <button class="count-pill" data-count="1"  title="1 chart  — full screen">1</button>
+      <button class="count-pill" data-count="2"  title="2 charts — side by side">2</button>
+      <button class="count-pill" data-count="4"  title="4 charts — 2×2 grid">4</button>
+      <button class="count-pill" data-count="6"  title="6 charts — 3×2 grid">6</button>
+      <button class="count-pill" data-count="8"  title="8 charts — 4×2 grid">8</button>
+    </div>
+
+    <!-- Live status indicator -->
+    <div class="top-bar-right">
+      <div class="status-dot" title="WebSocket live"></div>
+      <span class="status-text">Live</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ CHART GRID ════════════════════════════ -->
+  <!--
+    Layout class is set dynamically by dashboard.js.
+    Panes are created / destroyed at runtime.
+  -->
+  <div id="chart-grid" class="chart-grid layout-4">
+    <!-- Chart panes injected here by dashboard.js -->
+  </div>
+
+  <!-- ══════════════════════════════ SCRIPTS ══════════════════════════════ -->
+
+  <!--
+    Socket.IO client — must match the Flask-SocketIO server version.
+    Using 4.x which is compatible with Flask-SocketIO 5.x.
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+
+  <!--
+    Lightweight Charts v4 standalone build.
+    Exposes the global `LightweightCharts`.
+  -->
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+
+  <!-- Dashboard modules (order matters) -->
+  <script src="/static/js/ws-client.js"></script>
+  <script src="/static/js/charts.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+
+</body>
+</html>
